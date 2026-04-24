@@ -43,7 +43,7 @@ class CliParser:
     def parse(self):
         args = self.parser.parse_args()
         args.exclude = (
-            args.exclude.split(",") if args.exclude else []
+            args.exclude.split(",") if args.exclude else ""
         )
 
         return args
