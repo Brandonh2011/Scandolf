@@ -6,7 +6,7 @@ class Scanner:
         self.excludes = excludes
 
     def scan(self):
-        options = ["-A", "-p-", "-T5"]
+        options = ["-A", "-p-"]
         if self.excludes:
             excludes = (
                 ",".join(self.excludes)
