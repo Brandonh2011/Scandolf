@@ -1,4 +1,6 @@
 import subprocess
+import ipaddress
+import socket
 
 class Scanner:
     def __init__(self, targets, excludes):
@@ -14,6 +16,17 @@ class Scanner:
                 else self.excludes
             )
             options += ["--exclude", excludes]
+
+        if not self.is_ip_or_subnet(self.targets):
+            try:
+                ip = socket.gethostbyname(self.targets)
+            except:
+                print("Error resolving address. Aborting!")
+                exit(1)
+
+            if input(f"DNS Record {self.targets} {ip} detected. Proceed? (y/N): ") != "y":
+                print("Aborting!")
+                exit(1)
 
         cmd = ["nmap", *options, self.targets]
 
@@ -35,3 +48,10 @@ class Scanner:
     def show_results(self):
             print("\nScan finished.")
             print("Exit code:", self._last_exit_code)
+
+    def is_ip_or_subnet(self, target):
+        try:
+            ipaddress.ip_network(target, strict=False)
+            return True
+        except ValueError:
+            return False
