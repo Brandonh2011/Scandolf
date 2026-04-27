@@ -1,7 +1,7 @@
 from CLI.cli_parser import CliParser
 from Scanner.scanner import Scanner
-from Report.report_builder import ReportBuilder, HostResult
-from AI.ollama_analyzer import OllamaAnalyzer
+from Scanner.report_builder import ReportBuilder
+from Scanner.ollama_analyzer import OllamaAnalyzer
 from datetime import datetime, timezone
 
 
@@ -18,7 +18,6 @@ def main():
     ai_model = args.ai_model
     output_path = args.output
 
-    # Capture the scan start time for the report filename/header
     start_time = datetime.now(timezone.utc)
 
     # ------------------------------------------------------------------ #
@@ -38,13 +37,12 @@ def main():
     # ------------------------------------------------------------------ #
     for ip, parsed in scanner.get_parsed_results().items():
         host = report.get_or_create_host(ip)
-
-        host.hostname = parsed.get("hostname")
-        host.domain = parsed.get("domain")
-        host.os_type = parsed.get("os_type")
-        host.os_detail = parsed.get("os_detail")
-        host.open_services = parsed.get("open_ports", [])
-        host.windows_info = parsed.get("smb_info", {})
+        host.hostname       = parsed.get("hostname")
+        host.domain         = parsed.get("domain")
+        host.os_type        = parsed.get("os_type")
+        host.os_detail      = parsed.get("os_detail")
+        host.open_services  = parsed.get("open_ports", [])
+        host.windows_info   = parsed.get("smb_info", {})
         host.probable_vulns = parsed.get("probable_vulns", [])
         host.command_outputs = parsed.get("command_outputs", [])
 
@@ -53,7 +51,7 @@ def main():
     # ------------------------------------------------------------------ #
     analyzer = OllamaAnalyzer(model=ai_model)
 
-    for ip, host in report._hosts.items():
+    for ip, host in report.get_hosts().items():
         if no_ai:
             host.ai_section = analyzer.skipped_section("--no-ai flag was provided")
         else:
