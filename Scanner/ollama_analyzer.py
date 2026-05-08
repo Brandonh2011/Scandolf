@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 
 
 OLLAMA_BASE_URL = "http://localhost:11434"
-DEFAULT_MODEL = "gemma3:1b"   # smaller Gemma; override with --ai-model
+DEFAULT_MODEL = "gemma4:e4b"   # override with --ai-model
 DEFAULT_TIMEOUT = 120         # seconds
 
 
